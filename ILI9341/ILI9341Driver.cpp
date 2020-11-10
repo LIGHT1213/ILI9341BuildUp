@@ -145,8 +145,6 @@ void ili9341Driver::ILI9341Reset(void)
 {
 HAL_GPIO_WritePin(LCD_RST_GPIO_Port, LCD_RST_Pin, GPIO_PIN_RESET);
 HAL_Delay(200);
-//HAL_GPIO_WritePin(LCD_CS_PORT, LCD_CS_PIN, GPIO_PIN_RESET);
-HAL_Delay(200);
 HAL_GPIO_WritePin(LCD_RST_GPIO_Port, LCD_RST_Pin, GPIO_PIN_SET);	
 }
 void ili9341Driver::ILI9341_WriteData(uint8_t Data)
@@ -159,10 +157,15 @@ void ili9341Driver::ILI9341_WriteCmd(uint8_t CMD)
 	HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);	
 	this->ILI9341_SPI_Send(CMD);
 }
-void ili9341Driver::ILI9341_SPI_Send(uint8_t SPI_Data)
+void inline ili9341Driver::ILI9341_SPI_Send(uint8_t SPI_Data)
 {
-	//SCB_CleanInvalidateDCache();
-	HAL_SPI_Transmit(this->UsedSPI, &SPI_Data, 1,1);
+	
+	while(this->UsedSPI->State!=HAL_SPI_STATE_READY)
+	{}
+	#ifdef CacheEnable
+	SCB_CleanDCache();
+	#endif
+	HAL_SPI_Transmit_DMA(this->UsedSPI, &SPI_Data, 1);
 }
 void ili9341Driver::ILI9341_SetRotation(uint8_t Rotation)
 {
@@ -250,8 +253,12 @@ if(Sending_in_Block != 0)
 {
 	for(uint32_t j = 0; j < (Sending_in_Block); j++)
 		{
-		////SCB_CleanInvalidateDCache();
-		HAL_SPI_Transmit(this->UsedSPI, (unsigned char *)burst_buffer, Buffer_Size,1);
+		while(this->UsedSPI->State!=HAL_SPI_STATE_READY)
+		{}
+			#ifdef CacheEnable
+	SCB_CleanDCache();
+	#endif
+		HAL_SPI_Transmit_DMA(this->UsedSPI, (unsigned char *)burst_buffer, Buffer_Size);
 		//OwnDelay(100);
 		//if(j%100==0)
 		//HAL_Delay(1);
@@ -260,8 +267,12 @@ if(Sending_in_Block != 0)
 }
 
 //REMAINDER!
-////SCB_CleanInvalidateDCache();
-HAL_SPI_Transmit(this->UsedSPI, (unsigned char *)burst_buffer, Remainder_from_block,1);	
+while(this->UsedSPI->State!=HAL_SPI_STATE_READY)
+{}
+	#ifdef CacheEnable
+	SCB_CleanDCache();
+	#endif
+HAL_SPI_Transmit_DMA(this->UsedSPI, (unsigned char *)burst_buffer, Remainder_from_block);	
 }
 
 void ili9341Driver::ILI9341_DrawText(const char* Text, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16_t Background_Colour)
@@ -332,8 +343,12 @@ HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_SET);
 
 //XDATA
 unsigned char Temp_Buffer[4] = {(uint8_t)(X>>8),(uint8_t)X, (uint8_t)((X+1)>>8), (uint8_t)(X+1)};
-//SCB_CleanInvalidateDCache();
-HAL_SPI_Transmit(this->UsedSPI, Temp_Buffer, 4,1);
+while(this->UsedSPI->State!=HAL_SPI_STATE_READY)
+{}
+	#ifdef CacheEnable
+	SCB_CleanDCache();
+	#endif
+HAL_SPI_Transmit_DMA(this->UsedSPI, Temp_Buffer, 4);
 
 //ADDRESS
 HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);	
@@ -342,8 +357,12 @@ HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_SET);
 
 //YDATA
 unsigned char Temp_Buffer1[4] = {(uint8_t)(Y>>8),(uint8_t)Y, (uint8_t)((Y+1)>>8),(uint8_t)(Y+1)};
-//SCB_CleanInvalidateDCache();
-HAL_SPI_Transmit(this->UsedSPI, Temp_Buffer1, 4,1);
+while(this->UsedSPI->State!=HAL_SPI_STATE_READY)
+{}
+	#ifdef CacheEnable
+	SCB_CleanDCache();
+	#endif
+HAL_SPI_Transmit_DMA(this->UsedSPI, Temp_Buffer1, 4);
 
 //ADDRESS	
 HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);	
@@ -352,8 +371,11 @@ HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_SET);
 
 //COLOUR	
 unsigned char Temp_Buffer2[2] = {(uint8_t)(Colour>>8), (uint8_t)Colour};
-////SCB_CleanInvalidateDCache();
-HAL_SPI_Transmit(this->UsedSPI, Temp_Buffer2, 2,1);
+while(this->UsedSPI->State!=HAL_SPI_STATE_READY)
+	#ifdef CacheEnable
+	SCB_CleanDCache();
+	#endif
+HAL_SPI_Transmit_DMA(this->UsedSPI, Temp_Buffer2, 2);
 	
 }
 void inline ili9341Driver::LCDdelay(void)
