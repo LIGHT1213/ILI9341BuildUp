@@ -12,9 +12,12 @@
 > ```
 * STM32CubeMX初始化说明  
  在STM32CubeMx中的设置有以下几点需要注意，首先spi速率不得超过60M，data size 8bit，cpol LOW,CPHA 1edge  
- 同时应当注意mosi，miso，sck三个io的speed应当设置为最高速率（<font color=#DC143C size=3 face="黑体">这点在使用STM32H7时必须注意</font>，cubemx在初始化H7的SPI相关时会变成LOW）,NSS信号应当开启硬件控制,其次在<font color=#DC143C size=3 face="黑体">RST,DC应当命名为LCD_RST和LCD_RST </font>。
+ 同时应当注意mosi，miso，sck三个io的speed应当设置为最高速率（<font color=#DC143C size=3 face="黑体">这点在使用STM32H7时必须注意</font>，cubemx在初始化H7的SPI相关时会变成LOW）,NSS信号应当开启硬件控制,其次在<font color=#DC143C size=3 face="黑体">RST,DC应当命名为LCD_RST和LCD_DC </font>。
  * 性能测试  
  通过初始化TIM1来计时，计算FPS
  ![FPS测试](https://raw.githubusercontent.com/LIGHT1213/picture/master/FPS.gif)
-
+##  版本
+* 目前版本v0.1 
+### 版本说明
+初始化工程，确定软件结构，提供几个基本的lcd操作接口
  
