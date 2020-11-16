@@ -100,12 +100,12 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
-	//HAL_TIM_Base_Start_IT(&htim17);
 	LCD1=NewLCDGet();
-	//LCD1->LCDx
 	ILI9341Init(LCD1,&hspi2);
-	ILI9341SetColor(LCD1,RED);
-	
+	ILI9341_Set_Rotation(LCD1,SCREEN_HORIZONTAL_2);
+	ILI9341SetColor(LCD1,WHITE);
+	ILI9341_InitWave(LCD1,320,0);
+	//ILI9341_TEST(LCD1);
 	//LCD1->LCDx.ILI9341_FillScreen(RED);
   /* USER CODE END 2 */
 
@@ -113,51 +113,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		
-//		ILI9341SetColor(LCD1,WHITE);
-//		ILI9341_Set_Rotation(LCD1,SCREEN_HORIZONTAL_2);
-//		ILI9341_ShowText(LCD1,"FPS TEST, 40 loop 2 screens", 100, 100, BLACK, 2, WHITE);
-//		HAL_Delay(2000);
-//		ILI9341SetColor(LCD1,WHITE);
-//		
-//		uint32_t Timer_Counter = 0;
-//		for(uint32_t j = 0; j < 2; j++)
-//		{
-//			HAL_TIM_Base_Start(&htim1);
-//			for(uint16_t i = 0; i < 10; i++)
-//			{
-//				ILI9341SetColor(LCD1,WHITE);
-//				ILI9341SetColor(LCD1,BLACK);
-//			}
-//			
-//			//20.000 per second!
-//			HAL_TIM_Base_Stop(&htim1);		
-//			Timer_Counter += __HAL_TIM_GET_COUNTER(&htim1);
-//			__HAL_TIM_SET_COUNTER(&htim1, 0);
-//		}
-//		Timer_Counter /= 2;
-//		
-//		char counter_buff[30];		
-//		ILI9341SetColor(LCD1,WHITE);
-//		ILI9341_Set_Rotation(LCD1,SCREEN_HORIZONTAL_2);
-//		sprintf(counter_buff, "Timer counter value: %d", Timer_Counter*2);		
-//		ILI9341_ShowText(LCD1,counter_buff, 10, 10, BLACK, 2, WHITE);
-//		
-//		double seconds_passed = 2*((float)Timer_Counter / 20000);
-//		sprintf(counter_buff, "Time: %.3f Sec", seconds_passed);		
-//		ILI9341_ShowText(LCD1,counter_buff, 10, 30, BLACK, 2, WHITE);
-//		
-//		double timer_float = 20/(((float)Timer_Counter)/20000);
-//		
-//		sprintf(counter_buff, "FPS:  %.2f", timer_float);
-//		ILI9341_ShowText(LCD1,counter_buff, 10, 50, BLACK, 2, WHITE);
-//		double MB_PS = timer_float*240*320*2/1000000;
-//		sprintf(counter_buff, "MB/S: %.2f", MB_PS);
-//		ILI9341_ShowText(LCD1,counter_buff, 10, 70, BLACK, 2, WHITE);
-//		double SPI_utilized_percentage = (MB_PS/(7.5 ))*100;		
-//		sprintf(counter_buff, "SPI Utilized: %.2f", SPI_utilized_percentage);
-//		ILI9341_ShowText(LCD1,counter_buff, 10, 90, BLACK, 2, WHITE);
-//		HAL_Delay(10000);	
+		for(int i=0;i<110;i++)
+		{
+		ILI9341_AddPointToWave(LCD1,i+209);
+		ILI9341_UpdateWave(LCD1);
+		}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
