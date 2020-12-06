@@ -22,9 +22,9 @@ ili9341buildup/ili9341driver.o: ..\ILI9341\ILI9341Driver.cpp \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stddef.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\libcxx\__nullptr \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\libcxx\math.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\math.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\libcxx\stdlib.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
-  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\math.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\libcxx\type_traits \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\libcxx\cstddef \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\libcxx\version \
@@ -50,5 +50,6 @@ ili9341buildup/ili9341driver.o: ..\ILI9341\ILI9341Driver.cpp \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_tim.h \
   ..\Drivers\STM32H7xx_HAL_Driver\Inc\stm32h7xx_hal_tim_ex.h \
   ..\ILI9341\5x5_font.h \
+  C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\libcxx\cstring \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\libcxx\string.h \
   C:\Keil_v5\ARM\ARMCLANG\Bin\..\include\string.h

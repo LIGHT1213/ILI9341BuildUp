@@ -16,8 +16,9 @@ extern "C"
 	void ILI9341_InitWave(struct ILI9341DriverK *lcd,uint16_t Max,uint16_t Min);
 	void ILI9341_UpdateWave(struct ILI9341DriverK *lcd);
 	void ILI9341_AddPointToWave(struct ILI9341DriverK *lcd,uint16_t Num);
+	void ILI9341_AppendList(struct ILI9341DriverK *lcd,uint8_t *List);
 	
-	//void ILI9341_TEST(struct ILI9341DriverK *lcd);
+	void ILI9341_TEST(struct ILI9341DriverK *lcd);
 	
 
 #ifdef __cplusplus

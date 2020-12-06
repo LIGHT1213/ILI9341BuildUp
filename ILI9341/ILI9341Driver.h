@@ -5,7 +5,7 @@
 #define SCREEN_VERTICAL_2 2
 #define SCREEN_HORIZONTAL_2 3
 
-#define BURST_MAX_SIZE 500
+#define BURST_MAX_SIZE 1000
 
 #define BLACK 0x0000
 #define NAVY 0x000F
@@ -45,6 +45,8 @@ extern "C"
 		void ILI9341_InitDynamicGraph(uint32_t Max, uint32_t Min);
 		void ILI9341_UpdateDynamicGraph(void);
 		void ILI9341_AddPointToDynamicGraph(uint16_t Num);
+		void ILI9341_TEST(void);
+		void ILI9341_AppendList(uint8_t * List);
 		int LCD_HEIGHT;
 		int LCD_WIDTH;
 
@@ -62,6 +64,7 @@ extern "C"
 		void inline ILI9341Enable(void);
 		void inline ILI9341Reset(void);
 		void inline LCDdelay(void);
+		void ILI9341_ClearReaginSet(int Bx,int By,int Ex,int Ey);
 
 		SPI_HandleTypeDef *UsedSPI;
 		uint32_t DynamicGraphMax, DynamicGraphMin;

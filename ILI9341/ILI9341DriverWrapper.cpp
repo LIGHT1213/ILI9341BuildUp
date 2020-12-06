@@ -48,7 +48,16 @@ extern "C"
 	{
 		lcd->LCDx.ILI9341_AddPointToDynamicGraph(Num);
 	}
+	void ILI9341_AppendList(struct ILI9341DriverK *lcd,uint8_t *List)
+	{
+		lcd->LCDx.ILI9341_AppendList(List);
+	}
 	
+	void ILI9341_TEST(struct ILI9341DriverK *lcd)
+	{
+		lcd->LCDx.ILI9341_TEST();
+		lcd->LCDx.ILI9341_UpdateDynamicGraph();
+	}
 
 #ifdef __cplusplus
 }

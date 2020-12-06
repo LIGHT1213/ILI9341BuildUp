@@ -30,6 +30,7 @@
 "ili9341buildup\system_stm32h7xx.o"
 "ili9341buildup\ili9341driverwrapper.o"
 "ili9341buildup\ili9341driver.o"
+"ili9341buildup\font.o"
 --strict --scatter "ILI9341BuildUp\ILI9341BuildUp.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
