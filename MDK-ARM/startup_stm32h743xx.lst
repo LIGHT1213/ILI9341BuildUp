@@ -1281,7 +1281,7 @@ interwork --depend=ili9341buildup\startup_stm32h743xx.d -oili9341buildup\startu
 p_stm32h743xx.o -I.\RTE\_ILI9341BuildUp -IC:\Users\pan39\AppData\Local\Arm\Pack
 s\ARM\CMSIS\5.7.0\CMSIS\Core\Include -IC:\Users\pan39\AppData\Local\Arm\Packs\K
 eil\STM32H7xx_DFP\2.7.0\Drivers\CMSIS\Device\ST\STM32H7xx\Include --predefine="
-__UVISION_VERSION SETA 532" --predefine="_RTE_ SETA 1" --predefine="STM32H743xx
+__UVISION_VERSION SETA 533" --predefine="_RTE_ SETA 1" --predefine="STM32H743xx
  SETA 1" --predefine="_RTE_ SETA 1" --list=startup_stm32h743xx.lst startup_stm3
 2h743xx.s
 

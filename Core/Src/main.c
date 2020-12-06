@@ -38,7 +38,8 @@ extern "C" {
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-int32_t UsTimes=0;
+struct ILI9341DriverK *LCD1;
+uint8_t UpDateFlag=0;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -47,7 +48,7 @@ int32_t UsTimes=0;
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-	
+	uint8_t str1[]="Hello wrold";
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -74,7 +75,7 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	struct ILI9341DriverK *LCD1;
+	SCB->VTOR = (FLASH_BASE | 0x00020000);
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -100,10 +101,12 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
+	//HAL_TIM_Base_Start_IT(&htim17);
 	LCD1=NewLCDGet();
 	ILI9341Init(LCD1,&hspi2);
 	ILI9341_Set_Rotation(LCD1,SCREEN_HORIZONTAL_2);
 	ILI9341SetColor(LCD1,WHITE);
+	ILI9341_AppendList(LCD1,str1);
 	ILI9341_InitWave(LCD1,320,0);
 	//ILI9341_TEST(LCD1);
 	//LCD1->LCDx.ILI9341_FillScreen(RED);
@@ -115,9 +118,13 @@ int main(void)
   {
 		for(int i=0;i<110;i++)
 		{
-		ILI9341_AddPointToWave(LCD1,i+209);
-		ILI9341_UpdateWave(LCD1);
+			ILI9341_AddPointToWave(LCD1,i+209);
+			ILI9341_UpdateWave(LCD1);
+			UpDateFlag=1;
 		}
+//		ILI9341_AppendList(LCD1,str1);
+//		HAL_Delay(100);
+		//ILI9341_TEST(LCD1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -192,20 +199,23 @@ void SystemClock_Config(void)
 #ifdef __cplusplus
 }
 #endif
-void OwnDelay(int32_t usTimes)
-{
-	//HAL_TIM_Base_Start_IT(&htim17);
-	UsTimes=usTimes;
-	while(UsTimes>0);
-	//HAL_TIM_Base_Stop_IT(&htim17);
-}
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	if(htim==&htim17)
-	{
-		if(UsTimes>-1)
-		UsTimes--;
-	}
+//	static uint16_t Counter;
+//	if(htim==&htim17)
+//	{
+//		Counter++;
+//		if(Counter==30)
+//		{
+//			if(UpDateFlag==1)
+//			{
+//				//ILI9341_UpdateWave(LCD1);
+//				UpDateFlag=0;
+//			}
+//			//ILI9341_UpdateWave(LCD1);
+//			Counter=0;
+//		}
+//	}
 }
 /* USER CODE END 4 */
 
