@@ -22,6 +22,7 @@
 ## *版本说明*
 v0.1初始化工程，确定软件结构，提供几个基本的lcd操作接口  
 v1.0提供波形绘制函数  
+v1.1更换了字符库，字体不会再瞎眼睛了
 ## *API使用说明*  
 * API总览
 > ```
@@ -32,9 +33,9 @@ v1.0提供波形绘制函数
 > void ILI9341_SetRotation(uint8_t Rotation);
 > //设置屏幕方向
 >void ILI9341_DrawText(const char *Text, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16_t Background_Colour);
-> //绘制text文本，注意目前的字符库非常丑
->void ILI9341_DrawChar(char Character, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16_t Background_Colour);
-> //绘制单个字符
+> //绘制text文本~~注意目前的字符库非常丑~~
+>~~void ILI9341_DrawChar(char Character, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16_t Background_Colour);~~
+> ~~//绘制单个字符~~ 该API已经废弃
 >void ILI9341_DrawRectangle(uint16_t X, uint16_t Y, uint16_t Width, uint16_t Height, uint16_t Colour);
 > //绘制矩形
 >void ILI9341_DrawPixel(uint16_t X, uint16_t Y, uint16_t Colour);
