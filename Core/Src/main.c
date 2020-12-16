@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
 #include "dma.h"
 #include "spi.h"
 #include "tim.h"
@@ -49,6 +50,8 @@ uint8_t UpDateFlag=0;
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 	uint8_t str1[]="Hello wrold";
+	uint32_t adcBuf[3];
+	char Str[100];
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -100,6 +103,8 @@ int main(void)
   MX_SPI2_Init();
   MX_TIM1_Init();
   MX_TIM17_Init();
+  MX_ADC1_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 	//HAL_TIM_Base_Start_IT(&htim17);
 	LCD1=NewLCDGet();
@@ -107,6 +112,8 @@ int main(void)
 	ILI9341_Set_Rotation(LCD1,SCREEN_HORIZONTAL_2);
 	ILI9341SetColor(LCD1,WHITE);
 	ILI9341_AppendList(LCD1,str1);
+	HAL_TIM_Base_Start_IT(&htim3);
+	//HAL_ADCEx_Calibration_Start(&hadc1,);
 	ILI9341_InitWave(LCD1,320,0);
 	//ILI9341_TEST(LCD1);
 	//LCD1->LCDx.ILI9341_FillScreen(RED);
@@ -116,6 +123,26 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+//		for(int i=0;i<3;i++)
+
+//	{
+//HAL_ADC_Start(&hadc1);
+
+//HAL_ADC_PollForConversion(&hadc1,0xffff);//等待ADC转换完成
+
+//adcBuf[i]=HAL_ADC_GetValue(&hadc1);
+//		//sprintf(Str,"%d   %d   %d",adcBuf[0],adcBuf[1],adcBuf[2]);
+//		
+////printf("------ch:%d--%d-------\r\n",i,adcBuf[i]);
+
+//}
+//HAL_ADC_Start(&hadc1);
+////HAL_ADC_Stop(&hadc1);
+////HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adcBuf, 5); //启用DMA的ADC转换，AD_DMA 0~3 对应ADC 0~3，这里注意最后一个参数的大小
+////HAL_Delay(500);
+//sprintf(Str,"  %d   %d   %d",adcBuf[0],adcBuf[1],adcBuf[2]);
+//ILI9341_AppendList(LCD1,(uint8_t*)Str);
+//HAL_Delay(500);
 		for(int i=0;i<110;i++)
 		{
 			ILI9341_AddPointToWave(LCD1,i+209);
@@ -150,6 +177,9 @@ void SystemClock_Config(void)
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
   while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
+  /** Macro to configure the PLL clock source
+  */
+  __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSI);
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
@@ -187,8 +217,17 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2;
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2|RCC_PERIPHCLK_ADC;
+  PeriphClkInitStruct.PLL2.PLL2M = 32;
+  PeriphClkInitStruct.PLL2.PLL2N = 129;
+  PeriphClkInitStruct.PLL2.PLL2P = 2;
+  PeriphClkInitStruct.PLL2.PLL2Q = 2;
+  PeriphClkInitStruct.PLL2.PLL2R = 2;
+  PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_1;
+  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
+  PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
   PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
+  PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
     Error_Handler();

@@ -25,9 +25,13 @@ extern "C"
 	{
 		lcd->LCDx.ILI9341_SetRotation(Rotation);
 	}
-	void ILI9341_ShowText(struct ILI9341DriverK *lcd, const char *Text, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16_t Background_Colour)
+	void ILI9341_ShowText(struct ILI9341DriverK *lcd, uint8_t *Text, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16_t Background_Colour)
 	{
 		lcd->LCDx.ILI9341_DrawText(Text, X, Y, Colour, Size, Background_Colour);
+	}
+	void ILI9341_ShowChar(struct ILI9341DriverK *lcd,uint16_t x, uint16_t y, uint16_t fc, uint16_t bc, uint8_t *s)
+	{
+		lcd->LCDx.ILI9341_DrawChar(x,y,fc,bc,s);
 	}
 	void ILI9341_DrawPoint(struct ILI9341DriverK *lcd, uint16_t X, uint16_t Y, uint16_t Colour)
 	{

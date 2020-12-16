@@ -281,56 +281,144 @@ void ili9341Driver::ILI9341_DrawColourBurst(uint16_t Colour, uint32_t Size)
 	HAL_SPI_Transmit_DMA(this->UsedSPI, (unsigned char *)burst_buffer, Remainder_from_block);
 }
 
-void ili9341Driver::ILI9341_DrawText(const char *Text, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16_t Background_Colour)
+void ili9341Driver::ILI9341_DrawText(uint8_t *Text, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16_t Background_Colour)
 {
-	while (*Text)
-	{
-		this->ILI9341_DrawChar(*Text++, X, Y, Colour, Size, Background_Colour);
-		X += CHAR_WIDTH * Size;
-	}
+		this->ILI9341_DrawChar(X, Y, Colour, Background_Colour,Text++);
 }
-void ili9341Driver::ILI9341_DrawChar(char Character, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16_t Background_Colour)
+void ili9341Driver::ILI9341_DrawChar(uint16_t x, uint16_t y, uint16_t fc, uint16_t bc, uint8_t *s)
 {
-	uint8_t function_char;
-	uint8_t i, j;
+		uint8_t i,j;
+	uint16_t k,x0;
+	x0=x;
 
-	function_char = Character;
-
-	if (function_char < ' ')
-	{
-		Character = 0;
-	}
-	else
-	{
-		function_char -= 32;
-	}
-
-	char temp[CHAR_WIDTH];
-	for (uint8_t k = 0; k < CHAR_WIDTH; k++)
-	{
-		temp[k] = font[function_char][k];
-	}
-
-	// Draw pixels
-	this->ILI9341_DrawRectangle(X, Y, CHAR_WIDTH * Size, CHAR_HEIGHT * Size, Background_Colour);
-	for (j = 0; j < CHAR_WIDTH; j++)
-	{
-		for (i = 0; i < CHAR_HEIGHT; i++)
+	while(*s) 
+	{	
+		if((*s) < 128) 
 		{
-			if (temp[j] & (1 << i))
+			k=*s;
+			if (k==13) 
 			{
-				if (Size == 1)
-				{
-					this->ILI9341_DrawPixel(X + j, Y + i, Colour);
-				}
-				else
-				{
-					this->ILI9341_DrawRectangle(X + (j * Size), Y + (i * Size), Size, Size, Colour);
-				}
+				x=x0;
+				y+=16;
 			}
+			else 
+			{
+				if (k>32) k-=32; else k=0;
+	
+			    for(i=0;i<16;i++)
+				for(j=0;j<8;j++) 
+					{
+				    	if(asc16[k*16+i]&(0x80>>j))	this->ILI9341_DrawPixel(x+j,y+i,fc);
+						else 
+						{
+							if (fc!=bc) this->ILI9341_DrawPixel(x+j,y+i,bc);
+						}
+					}
+				x+=8;
+			}
+			s++;
 		}
+			
+		else 
+		{
+		
+
+			for (k=0;k<hz16_num;k++) 
+			{
+			  if ((hz16[k].Index[0]==*(s))&&(hz16[k].Index[1]==*(s+1)))
+			  { 
+				    for(i=0;i<16;i++)
+				    {
+						for(j=0;j<8;j++) 
+							{
+						    	if(hz16[k].Msk[i*2]&(0x80>>j))	this->ILI9341_DrawPixel(x+j,y+i,fc);
+								else {
+									if (fc!=bc) this->ILI9341_DrawPixel(x+j,y+i,bc);
+								}
+							}
+						for(j=0;j<8;j++) 
+							{
+						    	if(hz16[k].Msk[i*2+1]&(0x80>>j))	this->ILI9341_DrawPixel(x+j+8,y+i,fc);
+								else 
+								{
+									if (fc!=bc) this->ILI9341_DrawPixel(x+j+8,y+i,bc);
+								}
+							}
+				    }
+				}
+			  }
+			s+=2;x+=16;
+		} 
+		
 	}
 }
+//void ili9341Driver::ILI9341_DrawChar(uint8_t *Character, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16_t Background_Colour)
+//{
+//		uint8_t i,j;
+//	uint16_t k,x0;
+//	x0=X;
+
+//	while(*Character) 
+//	{	
+//		if((*Character) < 128) 
+//		{
+//			k=*Character;
+//			if (k==13) 
+//			{
+//				X=x0;
+//				Y+=16;
+//			}
+//			else 
+//			{
+//				if (k>32) k-=32; else k=0;
+//	
+//			    for(i=0;i<16;i++)
+//				for(j=0;j<8;j++) 
+//					{
+//				    	if(asc16[k*16+i]&(0x80>>j))	ILI9341_DrawPixel(X+j,Y+i,Colour);
+//						else 
+//						{
+//							if (Colour!=Background_Colour) ILI9341_DrawPixel(X+j,Y+i,Background_Colour);
+//						}
+//					}
+//				X+=8;
+//			}
+//			Character++;
+//		}
+//			
+//		else 
+//		{
+//		
+
+//			for (k=0;k<hz16_num;k++) 
+//			{
+//			  if ((hz16[k].Index[0]==*(Character))&&(hz16[k].Index[1]==*(Character+1)))
+//			  { 
+//				    for(i=0;i<16;i++)
+//				    {
+//						for(j=0;j<8;j++) 
+//							{
+//						    	if(hz16[k].Msk[i*2]&(0x80>>j))	ILI9341_DrawPixel(X+j,Y+i,Colour);
+//								else {
+//									if (Colour!=Background_Colour) ILI9341_DrawPixel(X+j,Y+i,Background_Colour);
+//								}
+//							}
+//						for(j=0;j<8;j++) 
+//							{
+//						    	if(hz16[k].Msk[i*2+1]&(0x80>>j))	ILI9341_DrawPixel(X+j+8,Y+i,Colour);
+//								else 
+//								{
+//									if (Colour!=Background_Colour) ILI9341_DrawPixel(X+j+8,Y+i,Background_Colour);
+//								}
+//							}
+//				    }
+//				}
+//			  }
+//			Character+=2;X+=16;
+//		} 
+//		
+//	}
+//}
 void ili9341Driver::ILI9341_DrawRectangle(uint16_t X, uint16_t Y, uint16_t Width, uint16_t Height, uint16_t Colour)
 {
 	if ((X >= this->LCD_WIDTH) || (Y >= this->LCD_HEIGHT))
@@ -365,7 +453,7 @@ void ili9341Driver::ILI9341_DrawPixel(uint16_t X, uint16_t Y, uint16_t Colour)
 	SCB_CleanDCache();
 #endif
 	HAL_SPI_Transmit_DMA(this->UsedSPI, Temp_Buffer, 4);
-
+	//HAL_SPI_Transmit(this->UsedSPI, Temp_Buffer, 4,1);
 	//ADDRESS
 	HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);
 	ILI9341_SPI_Send(0x2B);
@@ -380,7 +468,7 @@ void ili9341Driver::ILI9341_DrawPixel(uint16_t X, uint16_t Y, uint16_t Colour)
 	SCB_CleanDCache();
 #endif
 	HAL_SPI_Transmit_DMA(this->UsedSPI, Temp_Buffer1, 4);
-
+	//HAL_SPI_Transmit(this->UsedSPI, Temp_Buffer1, 4,1);
 	//ADDRESS
 	HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);
 	ILI9341_SPI_Send(0x2C);
@@ -395,35 +483,20 @@ void ili9341Driver::ILI9341_DrawPixel(uint16_t X, uint16_t Y, uint16_t Colour)
 	SCB_CleanDCache();
 #endif
 	HAL_SPI_Transmit_DMA(this->UsedSPI, Temp_Buffer2, 2);
+	//HAL_SPI_Transmit(this->UsedSPI, Temp_Buffer2, 4,1);
 }
 void ili9341Driver::ILI9341_InitDynamicGraph(uint32_t Max, uint32_t Min)
 {
 	this->DynamicGraphMax = Max;
 	this->DynamicGraphMin = Min;
 	memset(this->DynamicGraphRAM,BLACK,100*320*2);
-//	for (int i = 0; i < 100; i++)
-//	{
-//		for (int j = 0; j < 320; j++)
-//		{
-//			this->DynamicGraphRAM[i][j] = BLACK;
-//		}
-//	}
 	for(int i=0;i<320;i++)
 	{
 		this->DynamicLine[i]=10;
 	}
-
-	//ILI9341_DrawLineToMEM(0,0,100,320);
 }
 void ili9341Driver::ILI9341_AddLineToDynamicGraph(void)
 {
-//	uint16_t Range=((this->DynamicGraphMax)-(this->DynamicGraphMin));
-//	
-//	for(int i=0;i<320;i++)
-//	{
-//		temp1=(uint16_t)((this->DynamicLine[i]*1.0/Range)*100);
-//		this->ILI9341_DrawPointToMEM(temp1,i);
-//	}
 	uint16_t Range=((this->DynamicGraphMax)-(this->DynamicGraphMin));
 	for(int i=0;i<319;i++)
 	{
@@ -434,10 +507,6 @@ void ili9341Driver::ILI9341_AddLineToDynamicGraph(void)
 }
 void ili9341Driver::ILI9341_AddPointToDynamicGraph(uint16_t Num)
 {
-//	if(Num>this->DynamicGraphMax)
-//	Num=this->DynamicGraphMax;
-//	else if(Num<this->DynamicGraphMin)
-//	Num=this->DynamicGraphMin;
 	for(uint16_t i=0;i<=318;i++)
 	{
 		this->DynamicLine[i]=this->DynamicLine[i+1];
@@ -446,7 +515,6 @@ void ili9341Driver::ILI9341_AddPointToDynamicGraph(uint16_t Num)
 }
 void ili9341Driver::ILI9341_UpdateDynamicGraph(void)
 {
-	//SCB_EnableDCache();
 	static uint32_t count = 0;
 	uint32_t counter = 0;
 	uint8_t *Point = (unsigned char *)this->DynamicGraphRAM;
@@ -458,18 +526,11 @@ void ili9341Driver::ILI9341_UpdateDynamicGraph(void)
 	
 	this->ILI9341_SetAddress(0, 140, LCD_WIDTH, LCD_HEIGHT);
 	HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_SET);
-//	while (this->UsedSPI->State != HAL_SPI_STATE_READY)
-//	{
-//	}
-//	#ifdef CacheEnable
-//	SCB_CleanDCache();
-//	#endif
-//	HAL_SPI_Transmit_DMA(this->UsedSPI, &temp, 1);
 	for (uint32_t i = 0; i < 100 * 320 * 2 / BURST_MAX_SIZE; i++)
 	{
 		memcpy(Temp_small_buffer,&Point[counter],BURST_MAX_SIZE);
 		while (this->UsedSPI->State == HAL_SPI_STATE_BUSY_TX)
-		//while (((DMA_Stream_TypeDef *)this->UsedSPI->Instance)->NDTR!=1)
+		while (((DMA_Stream_TypeDef *)this->UsedSPI->Instance)->NDTR!=1)
 		{
 		}
 		#ifdef CacheEnable
@@ -479,7 +540,6 @@ void ili9341Driver::ILI9341_UpdateDynamicGraph(void)
 		HAL_SPI_Transmit(this->UsedSPI, Temp_small_buffer, BURST_MAX_SIZE,1);
 		counter += BURST_MAX_SIZE;
 	}
-	//SCB_DisableDCache();
 	
 }
 void ili9341Driver::ILI9341_DrawPointToMEM(uint16_t x, uint16_t y)
@@ -599,7 +659,7 @@ void ili9341Driver::ILI9341_AppendList(uint8_t * List)
 	static uint8_t* ListGet[15];
 	if(AppendListNum<=14)
 	{
-		this->ILI9341_DrawText((const char*)List,0,AppendListNum*16,BLACK,2,WHITE);
+		this->ILI9341_DrawText(List,0,AppendListNum*16,BLACK,2,WHITE);
 		ListGet[AppendListNum]=List;
 		AppendListNum++;
 	}
@@ -607,35 +667,19 @@ void ili9341Driver::ILI9341_AppendList(uint8_t * List)
 	{
 		for(int i=0;i<=13;i++)
 		{
-			//Gui_DrawFont_GBK16(0,i*16,BLACK,WHITE,ListGet[i+1]);
-			//ListGet[i]=NULL;
-			
 			ListGet[i]=ListGet[i+1];
 		}
-		//ListGet[14]=NULL;
 		ListGet[14]=List;
-		//this->ILI9341_FillScreen(WHITE);
 		for(int i=0;i<=14;i++)
 		{
 			this->ILI9341_ClearReaginSet(0,i*16,240,16*(i+1));
-		//Gui_DrawFont_GBK16(0,i*16,BLACK,WHITE,ListGet[i]);
-			this->ILI9341_DrawText((const char*)ListGet[i],0,i*16,BLACK,2,WHITE);
+			this->ILI9341_DrawText(ListGet[i],0,i*16,BLACK,2,WHITE);
 		}
 	}
 		
 }
 void ili9341Driver::ILI9341_ClearReaginSet(int Bx,int By,int Ex,int Ey)
 {
-//	static int Y;
-//	Y=By;
-//	while(Y<=Ey)
-//	{
-//		for(int X=Bx;X<=Ex;X++)
-//		{
-//			this->ILI9341_DrawPixel(X,Y,WHITE);
-//		}
-//		Y++;
-//	}
 	this->ILI9341_SetAddress(Bx, By, Ex, Ey);
 	this->ILI9341_DrawColourBurst(WHITE, (Ex-Bx)*(Ey-By));
 }

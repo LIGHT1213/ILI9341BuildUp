@@ -1,7 +1,7 @@
 #ifndef __FONT_H
 #define __FONT_H
 #ifdef __cplusplus
-extern "C" {
+ extern "C" {
 #endif
 
 
@@ -13,14 +13,14 @@ extern "C" {
 
 struct typFNT_GB162
 {
-    uint8_t Index[2];
-    int8_t Msk[32];
+       uint8_t Index[2];	
+       int8_t Msk[32];
 };
 
 struct typFNT_GB242
 {
-    uint8_t Index[2];
-    int8_t Msk[72];
+       uint8_t Index[2];	
+       int8_t Msk[72];
 };
 
 extern const uint8_t asc16[];
