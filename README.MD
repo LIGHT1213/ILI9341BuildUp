@@ -34,8 +34,7 @@ v1.1更换了字符库，字体不会再瞎眼睛了
 > //设置屏幕方向
 >void ILI9341_DrawText(const char *Text, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16_t Background_Colour);
 > //绘制text文本~~注意目前的字符库非常丑~~
->~~void ILI9341_DrawChar(char Character, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16_t Background_Colour);~~
-> ~~//绘制单个字符~~ 该API已经废弃
+
 >void ILI9341_DrawRectangle(uint16_t X, uint16_t Y, uint16_t Width, uint16_t Height, uint16_t Colour);
 > //绘制矩形
 >void ILI9341_DrawPixel(uint16_t X, uint16_t Y, uint16_t Colour);
@@ -51,6 +50,8 @@ v1.1更换了字符库，字体不会再瞎眼睛了
 >void ILI9341_AppendList(uint8_t * List);
 > //添加一行字符，最终产生一种类似于shell的效果
 > ```
+~~void ILI9341_DrawChar(char Character, uint8_t X, uint8_t Y, uint16_t Colour, uint16_t Size, uint16_t Background_Colour);~~
+ ~~//绘制单个字符~~ 该API已经废弃
 * 特殊API说明  
   波形绘制功能展示  
 > ```
