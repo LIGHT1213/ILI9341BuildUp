@@ -1,6 +1,9 @@
 # <font face="微软雅黑">ILI9341驱动 STM32HAL 库版本
 * 驱动说明  
-由于之前使用的驱动文件刷新屏幕过慢，所以根据ILI9341手册重新调整了相关的数据的传输方式。
+由于之前使用的驱动文件刷新屏幕过慢，所以根据ILI9341手册重新调整了相关的数据的传输方式。注意此工程需要配合UsbBootLoad使用，想直接使用该工程，需要注释掉main文件中的第81行，此后还需要再keil中将ROM下载位置从0x8020000改为0x8000000。
+> ```
+> SCB->VTOR = (FLASH_BASE | 0x00020000);
+> ```
 * 使用方式  
  此驱动基于c++编写，在使用时将此工程中的ILI9341Driver.cpp，ILI9341Driver.hpp,ILI9341DriverWrapper.cpp,ILI9341DriverWrapper.h总计4个文件加入到工程中，在代码中加入代码后便可通过才做ILI9341DriverWrapper文件中的相关接口函数操作lcd。 
 > ```
@@ -11,14 +14,14 @@
 > ILI9341SetColor(LCD1,RED); //将lcd刷红
 > ```
 * STM32CubeMX初始化说明  
- 在STM32CubeMx中的设置有以下几点需要注意，首先spi速率不得超过60M，data size 8bit，cpol LOW,CPHA 1edge  
+ 在STM32CubeMx中的设置有以下几点需要注意，首先spi速率不得超过60M，data size 8bit，cpol LOW,CPHA 1edge，同时开启过SPI的DMA传输。  
  同时应当注意mosi，miso，sck三个io的speed应当设置为最高速率（<font color=#DC143C size=3 face="黑体">这点在使用STM32H7时必须注意</font>，cubemx在初始化H7的SPI相关时会变成LOW）,NSS信号应当开启硬件控制,其次在<font color=#DC143C size=3 face="黑体">RST,DC应当命名为LCD_RST和LCD_DC </font>。
  * 性能测试  
  通过初始化TIM1来计时，计算FPS
  ![FPS测试](https://raw.githubusercontent.com/LIGHT1213/picture/master/FPS.gif)  
  注意该测试基于STM32H743开启Dcache之后，但是实际使用中并不会开启DCache(为了更加兼容没有Cache的MCU)。在开启DMA后，效率可以达到开启Dcache的85％，不建议同时开启DMA和DCache，具体原因请看[这里](http://www.pchmath.top:1234/index.php/2020/06/22/%e8%ae%b0%e5%bd%95%e4%b8%80%e6%ac%a1stm32h743%e4%b8%b2%e5%8f%a3%e4%b8%8d%e5%ae%9a%e9%95%bfdmacache%e5%90%88%e5%b9%b6%e5%ae%9e%e7%8e%b0%e8%bf%87%e7%a8%8b/)。
 ## *版本*
-* 目前版本v1.0 
+* 目前版本v1.0.1 
 ## *版本说明*
 v0.1初始化工程，确定软件结构，提供几个基本的lcd操作接口  
 v1.0提供波形绘制函数  
