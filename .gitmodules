@@ -1,0 +1,3 @@
+[submodule "H7UsbBootLoad"]
+	path = H7UsbBootLoad
+	url = https://github.com/LIGHT1213/H7UsbBootLoad
